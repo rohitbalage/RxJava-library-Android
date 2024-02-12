@@ -24,6 +24,10 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView textView;
 
+    private Disposable disposable;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSubscribe(@NonNull Disposable d) {
                 Log.i(TAG, "onSubscribe invoked");
+
+                disposable=d;
             }
 
             @Override
@@ -68,6 +74,20 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         myObservable.subscribe(myObserver);
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // IN ORDER TO DISPOSE THE SUBSCRIPTION:
+        disposable.dispose();
+
+        /*
+        if a user initiate this view but decide to go back before the completion of the process
+        nothing harmful will happen, subscription will dispose and app will not crash or freeze
+        * */
 
     }
 }
